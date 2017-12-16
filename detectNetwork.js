@@ -17,8 +17,17 @@ var detectNetwork = function(cardNumber) {
 
 
 //find the prefix using findCardNumPrefix() function
+function findCardNumPrefix(cardNumber){
+	let cardNumberPrefix = cardNumber.slice(0, 2);
+	let cardNumberPrefixInt = parseInt(cardNumberPrefix);
+
+	return cardNumberPrefixInt;
+}
+
+console.log(findCardNumPrefix('343456789012345'));
 //find the length using findCardNumLength() function
 //decide which network it is using if statement
 //  prefix is 38 || 39 && length is 14 => Diner's Club
 // 	prefix is 34 || 37 && length is 15 => American Express
-//  otherwise its MasterCard 
+//  otherwise its MasterCard
+
