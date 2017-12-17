@@ -20,14 +20,16 @@ var detectNetwork = function(cardNumber) {
   if((parseInt(cardNumberPrefix) === 38 || parseInt(cardNumberPrefix) === 39) && cardNumberLength === 14){
   	
   	network = "Diner's Club";
-  	
   } else if((parseInt(cardNumberPrefix) === 34 || parseInt(cardNumberPrefix) === 37) && cardNumberLength === 15){
   	
   	network = 'American Express';
-  	
   } else if(parseInt(cardNumberPrefix[0]) === 4 && (cardNumberLength === 13 || cardNumberLength === 16 || cardNumberLength === 19)){
+  	
   	network = 'Visa';
-  } 
+  } else if((parseInt(cardNumberPrefix) === 51 || parseInt(cardNumberPrefix) === 52 || parseInt(cardNumberPrefix) === 53 || parseInt(cardNumberPrefix) === 54 || parseInt(cardNumberPrefix) === 55) && cardNumberLength === 16){
+
+  	network = 'MasterCard';
+  }
 
   return network;
 };
