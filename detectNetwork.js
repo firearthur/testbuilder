@@ -17,15 +17,17 @@ var detectNetwork = function(cardNumber) {
   let cardNumberLength = findCardNumLength(cardNumber);
   let network = '';
 
-  if((cardNumberPrefix === 38 || cardNumberPrefix === 39) && cardNumberLength === 14){
+  if((parseInt(cardNumberPrefix) === 38 || parseInt(cardNumberPrefix) === 39) && cardNumberLength === 14){
   	
   	network = "Diner's Club";
   	
-  } else if((cardNumberPrefix === 34 || cardNumberPrefix === 37) && cardNumberLength === 15){
+  } else if((parseInt(cardNumberPrefix) === 34 || parseInt(cardNumberPrefix) === 37) && cardNumberLength === 15){
   	
   	network = 'American Express';
   	
-  }
+  } else if(parseInt(cardNumberPrefix[0]) === 4 && (cardNumberLength === 13 || cardNumberLength === 16 || cardNumberLength === 19)){
+  	network = 'Visa';
+  } 
 
   return network;
 };
@@ -33,9 +35,8 @@ var detectNetwork = function(cardNumber) {
 //find the prefix using findCardNumPrefix() function
 function findCardNumPrefix(cardNumber){
 	let cardNumberPrefix = cardNumber.slice(0, 2);
-	let cardNumberPrefixInt = parseInt(cardNumberPrefix);
 
-	return cardNumberPrefixInt;
+	return cardNumberPrefix;
 }
 
 //find the length using findCardNumLength() function
@@ -47,6 +48,7 @@ console.log(detectNetwork('343456789012345'));
 console.log(detectNetwork('373456789012345'));
 console.log(detectNetwork('38354567890123'));
 console.log(detectNetwork('39314567890123'));
+
 
 // Visa always has a prefix of 4 and a length of 13, 16, or 19.
 // MasterCard always has a prefix of 51, 52, 53, 54, or 55 and a length of 16.
