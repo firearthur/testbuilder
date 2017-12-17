@@ -13,8 +13,21 @@ var detectNetwork = function(cardNumber) {
   // The American Express network always starts with a 34 or 37 and is 15 digits long
 
   // Once you've read this, go ahead and try to implement this function, then return to the console.
-};
+  let cardNumberPrefix = findCardNumPrefix(cardNumber);
+  let cardNumberLength = findCardNumLength(cardNumber);
+  let network = '';
 
+  if((cardNumberPrefix === 38 || cardNumberPrefix === 39) && cardNumberLength === 14){
+  	
+  	network = "Diner's Club";
+  	
+  } else if((cardNumberPrefix === 34 || cardNumberPrefix === 37) && cardNumberLength === 15){
+  	
+  	network = 'American Express';
+  	
+  }
+  return network;
+};
 
 //find the prefix using findCardNumPrefix() function
 function findCardNumPrefix(cardNumber){
@@ -24,10 +37,12 @@ function findCardNumPrefix(cardNumber){
 	return cardNumberPrefixInt;
 }
 
-console.log(findCardNumPrefix('343456789012345'));
 //find the length using findCardNumLength() function
-//decide which network it is using if statement
-//  prefix is 38 || 39 && length is 14 => Diner's Club
-// 	prefix is 34 || 37 && length is 15 => American Express
-//  otherwise its MasterCard
+function findCardNumLength(cardNumber){
+	return cardNumber.length;
+}
 
+console.log(detectNetwork('343456789012345'));
+console.log(detectNetwork('373456789012345'));
+console.log(detectNetwork('38354567890123'));
+console.log(detectNetwork('39314567890123'));
