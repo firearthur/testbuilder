@@ -26,6 +26,7 @@ var detectNetwork = function(cardNumber) {
   	network = 'American Express';
   	
   }
+
   return network;
 };
 
@@ -46,3 +47,9 @@ console.log(detectNetwork('343456789012345'));
 console.log(detectNetwork('373456789012345'));
 console.log(detectNetwork('38354567890123'));
 console.log(detectNetwork('39314567890123'));
+
+// Visa always has a prefix of 4 and a length of 13, 16, or 19.
+// MasterCard always has a prefix of 51, 52, 53, 54, or 55 and a length of 16.
+
+// add a third validation for visa checking the first number of the dual prefix checked and the length
+// add a fourth validation for MasterCard checking two numbers (regural) and the length
