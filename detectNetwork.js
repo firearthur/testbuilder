@@ -13,32 +13,114 @@ var detectNetwork = function(cardNumber) {
   // The American Express network always starts with a 34 or 37 and is 15 digits long
 
   // Once you've read this, go ahead and try to implement this function, then return to the console.
-  let cardNumberPrefix = findCardNumPrefix(cardNumber);
+  let slicedDinersPrefixes = [findCardNumPrefix(cardNumber, 2)];
+  let slicedAmericanPrefixes = [findCardNumPrefix(cardNumber, 2)];
+  let slicedVisaPrefixes = [findCardNumPrefix(cardNumber, 1)];
+  let slicedMasterCardPrefixes = [findCardNumPrefix(cardNumber, 2)];
+  let slicedDiscoverPrefixes = [findCardNumPrefix(cardNumber, 4), findCardNumPrefix(cardNumber, 3), findCardNumPrefix(cardNumber, 2)];
+  let slicedMaestroPrefixes = [findCardNumPrefix(cardNumber, 4)];
+
+  let dinersQualifiedLengths = ['14'];
+  let americanQualifiedLengths = ['15'];
+  let visaQualifiedLengths = ['13', '16','19'];
+  let masterCardQualifiedLengths = ['16'];
+  let discoverQualifiedLengths = ['16','19'];
+  let maestroQualifiedLengths = ['12','13','14', '15', '16', '17', '18', '19'];
+
+
   let cardNumberLength = findCardNumLength(cardNumber);
   let network = '';
 
-  if((parseInt(cardNumberPrefix) === 38 || parseInt(cardNumberPrefix) === 39) && cardNumberLength === 14){
+  
+  
+  if((findPrefixNetwork(slicedDinersPrefixes) === "Diner's Club") && isQualifiedLength(cardNumberLength, dinersQualifiedLengths)){
   	
   	network = "Diner's Club";
-  } else if((parseInt(cardNumberPrefix) === 34 || parseInt(cardNumberPrefix) === 37) && cardNumberLength === 15){
+  } else if((findPrefixNetwork(slicedAmericanPrefixes) === 'American Express') && isQualifiedLength(cardNumberLength, americanQualifiedLengths)){
   	
   	network = 'American Express';
-  } else if(parseInt(cardNumberPrefix[0]) === 4 && (cardNumberLength === 13 || cardNumberLength === 16 || cardNumberLength === 19)){
+  } else if((findPrefixNetwork(slicedVisaPrefixes) === 'Visa') && isQualifiedLength(cardNumberLength, visaQualifiedLengths)){
   	
   	network = 'Visa';
-  } else if((parseInt(cardNumberPrefix) === 51 || parseInt(cardNumberPrefix) === 52 || parseInt(cardNumberPrefix) === 53 || parseInt(cardNumberPrefix) === 54 || parseInt(cardNumberPrefix) === 55) && cardNumberLength === 16){
+  } else if((findPrefixNetwork(slicedMasterCardPrefixes) === 'MasterCard') && isQualifiedLength(cardNumberLength, masterCardQualifiedLengths)){
 
   	network = 'MasterCard';
+  } else if((findPrefixNetwork(slicedDiscoverPrefixes) === 'Discover') && isQualifiedLength(cardNumberLength, discoverQualifiedLengths)){
+
+	network = 'Discover';
+  } else if((findPrefixNetwork(slicedMaestroPrefixes) === 'Maestro') && isQualifiedLength(cardNumberLength, maestroQualifiedLengths)){
+  	network = 'Maestro';
   }
 
   return network;
 };
 
 //find the prefix using findCardNumPrefix() function
-function findCardNumPrefix(cardNumber){
-	let cardNumberPrefix = cardNumber.slice(0, 2);
+function findCardNumPrefix(cardNumber, numOfPrefixDigits){
+	let cardNumberPrefix = cardNumber.slice(0, numOfPrefixDigits);
 
 	return cardNumberPrefix;
+}
+
+
+function hasAnyNetworkPrefixes(networkPrefixes, prefixes){
+	let hasAnyPrefixes = networkPrefixes.some((prefix) => {
+
+		for (var i = 0; i < prefixes.length; i++) {
+			if(prefix === prefixes[i]){
+
+				return true;
+			}
+		}
+
+	});
+
+	return hasAnyPrefixes;	
+}
+
+
+function findPrefixNetwork(prefixes){
+	let network = '';
+	let dinersClubPrefixes = ['38','39'];
+	let americanExpressPrefixes = ['34','37'];
+	let visaPrefixes = ['4']
+	let masterCardPrefixes = ['51','52','53','54','55'];
+	let discoverPrefixes = ['6011','644','645','646','647','648','649','65'];
+	let maestroPrefixes = ['5018', '5020', '5038','6304']; 
+	
+
+	if(hasAnyNetworkPrefixes(dinersClubPrefixes, prefixes)){
+		network = "Diner's Club";
+
+	} else if(hasAnyNetworkPrefixes(americanExpressPrefixes, prefixes)){
+		network = 'American Express';
+
+	} else if (hasAnyNetworkPrefixes(visaPrefixes, prefixes)){
+		network = 'Visa';
+
+	} else if(hasAnyNetworkPrefixes(masterCardPrefixes, prefixes)){
+		network = 'MasterCard';
+
+	} else if(hasAnyNetworkPrefixes(discoverPrefixes, prefixes)){
+		network = 'Discover';
+
+	} else if(hasAnyNetworkPrefixes(maestroPrefixes, prefixes)){
+		network = 'Maestro';
+	}
+
+	return network;
+}
+
+
+function isQualifiedLength(length, qualifiedLengths){
+	let isQualifiedNetworkLength = false;
+	length = length.toString();
+
+	if(qualifiedLengths.some((qualifiedLength) => {return qualifiedLength === length;})){
+		isQualifiedNetworkLength = true;
+	}
+
+	return isQualifiedNetworkLength;
 }
 
 //find the length using findCardNumLength() function
@@ -46,14 +128,7 @@ function findCardNumLength(cardNumber){
 	return cardNumber.length;
 }
 
-console.log(detectNetwork('343456789012345'));
-console.log(detectNetwork('373456789012345'));
-console.log(detectNetwork('38354567890123'));
-console.log(detectNetwork('39314567890123'));
-
-
-// Visa always has a prefix of 4 and a length of 13, 16, or 19.
-// MasterCard always has a prefix of 51, 52, 53, 54, or 55 and a length of 16.
-
-// add a third validation for visa checking the first number of the dual prefix checked and the length
-// add a fourth validation for MasterCard checking two numbers (regural) and the length
+// Discover always has a prefix of 6011, 644-649, or 65, and a length of 16 or 19.
+// Maestro always has a prefix of 5018, 5020, 5038, or 6304, and a length of 12-19.
+// debugger;
+detectNetwork('50180123456789123');
