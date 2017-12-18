@@ -130,5 +130,16 @@ function findCardNumLength(cardNumber){
 
 // Discover always has a prefix of 6011, 644-649, or 65, and a length of 16 or 19.
 // Maestro always has a prefix of 5018, 5020, 5038, or 6304, and a length of 12-19.
-// debugger;
-detectNetwork('50180123456789123');
+
+// detectNetwork('50180123456789123');
+
+//write the tests for the two new cards
+//create a function getPrefixRangeArray(beiginning,end) that takes a beginning and end ranges of a Prefix
+//use the spread operator to dump the range arrays in the appropriate prefix arrays
+//add support in every step of the way for the new cards China UnionPay and Switch
+//create a function called isSwitch() which would find if the network of the card is switch and solve the 
+//conflict by adding a condition in the visa if statement varification and setting up the value of network accordingly
+//if the card number passes all condition for visa it might still be switch thats when you run the isSwitch function
+//if it checks then you set teh network to switch instead
+//you can add a micro performance booster at the last validation for switch to check if the network was already set to switch by the
+//previous validation in the visa section and directly move from there to the network return value 
