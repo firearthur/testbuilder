@@ -152,8 +152,15 @@ function findCardNumLength(cardNumber){
 //previous validation in the visa section and directly move from there to the network return value 
 
 
+
+//current program state
+//every card number starts with a 4 and has a length of 16 or 19 would should as Visa and Switch
+//goal is to distinguish between both
+//according to documentation in any conflict choose the network with the longer prefix (Switch) 
+
 // China UnionPay always has a prefix of 622126-622925, 624-626, or 6282-6288 and a length of 16-19.
 // Switch always has a prefix of 4903, 4905, 4911, 4936, 564182, 633110, 6333, or 6759 and a length of 16, 18, or 19.
+// Heads up! Switch and Visa seem to have some overlapping card numbers - in any apparent conflict, you should choose the network with the longer prefix.
 
 
 function getSequencedArray(beginning, end){

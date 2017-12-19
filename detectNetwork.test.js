@@ -194,10 +194,6 @@ var FILL_ME_IN = 'Fill this value in';
 
 
 
-// China UnionPay always has a prefix of 622126-622925, 624-626, or 6282-6288 and a length of 16-19.
-// Switch always has a prefix of 4903, 4905, 4911, 4936, 564182, 633110, 6333, or 6759 and a length of 16, 18, or 19.
-
-// Heads up! Switch and Visa seem to have some overlapping card numbers - in any apparent conflict, you should choose the network with the longer prefix.
 
 
 //create a function getSequencedArray(beginning, end) that receives beginning of the sequence
@@ -217,29 +213,55 @@ var FILL_ME_IN = 'Fill this value in';
 //   expect(detectNetwork( prefix + getPaddingString(length, prefix.length))).to.equal(NETWORK_NAME);
 // });
 
-describe('should support China UnionPay',function(){
-  let expect = chai.expect;
 
-  let prefixesArray = [...getSequencedArray(622126, 622925),...getSequencedArray(624, 626),...getSequencedArray(6282, 6288)];
-  let lengthsArray = [...getSequencedArray(16, 19)];
+
+
+
+// describe('should support China UnionPay',function(){
+//   let expect = chai.expect;
+
+//   let prefixesArray = [...getSequencedArray(622126, 622925),...getSequencedArray(624, 626),...getSequencedArray(6282, 6288)];
+//   let lengthsArray = [...getSequencedArray(16, 19)];
+
+//   prefixesArray.forEach((prefix) => {
+
+//     lengthsArray.forEach((length) => {
+      
+//       it('has a prefix of ' + prefix + ' and a length of ' + length, function(){
+//         expect(detectNetwork( prefix + getPaddingString(length, prefix.length))).to.equal('China UnionPay');
+//       });      
+
+//     });
+
+//   });
+
+// });
+
+// China UnionPay always has a prefix of 622126-622925, 624-626, or 6282-6288 and a length of 16-19.
+// Switch always has a prefix of 4903, 4905, 4911, 4936, 564182, 633110, 6333, or 6759 and a length of 16, 18, or 19.
+// Heads up! Switch and Visa seem to have some overlapping card numbers - in any apparent conflict, you should choose the network with the longer prefix.
+
+
+describe('should support Switch',function(){
+  var expect = chai.expect;
+
+  let prefixesArray = ['4903', '4905', '4911', '4936', '564182', '633110', '6333', '6759'];
+  let lengthsArray = ['16','18','19'];
 
   prefixesArray.forEach((prefix) => {
 
     lengthsArray.forEach((length) => {
       
       it('has a prefix of ' + prefix + ' and a length of ' + length, function(){
-        expect(detectNetwork( prefix + getPaddingString(length, prefix.length))).to.equal('China UnionPay');
+        expect(detectNetwork( prefix + getPaddingString(length, prefix.length))).to.equal('Switch');
       });      
 
     });
 
   });
 
+
 });
-
-
-
-// describe('should support Switch');
 
 
 
