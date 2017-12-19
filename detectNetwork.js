@@ -9,10 +9,19 @@
 
 var detectNetwork = function(cardNumber) {
   // Note: `cardNumber` will always be a string
+
+  //********Specs*********
   // The Diner's Club network always starts with a 38 or 39 and is 14 digits long
   // The American Express network always starts with a 34 or 37 and is 15 digits long
+  // Discover always has a prefix of 6011, 644-649, or 65, and a length of 16 or 19.
+  // Maestro always has a prefix of 5018, 5020, 5038, or 6304, and a length of 12-19.
+  // China UnionPay always has a prefix of 622126-622925, 624-626, or 6282-6288 and a length of 16-19.
+  // Switch always has a prefix of 4903, 4905, 4911, 4936, 564182, 633110, 6333, or 6759 and a length of 16, 18, or 19.
+  // Heads up! Switch and Visa seem to have some overlapping card numbers - in any apparent conflict, you should choose the network with the longer prefix.
+
 
   // Once you've read this, go ahead and try to implement this function, then return to the console.
+ 
   let slicedDinersPrefixes = [findCardNumPrefix(cardNumber, 2)];
   let slicedAmericanPrefixes = [findCardNumPrefix(cardNumber, 2)];
   let slicedVisaPrefixes = [findCardNumPrefix(cardNumber, 1)];
@@ -20,6 +29,7 @@ var detectNetwork = function(cardNumber) {
   let slicedDiscoverPrefixes = [findCardNumPrefix(cardNumber, 4), findCardNumPrefix(cardNumber, 3), findCardNumPrefix(cardNumber, 2)];
   let slicedMaestroPrefixes = [findCardNumPrefix(cardNumber, 4)];
   let slicedChinaUnionPayPrefixes = [findCardNumPrefix(cardNumber, 4), findCardNumPrefix(cardNumber, 3), findCardNumPrefix(cardNumber, 6)];
+  let slicedSwitchPrefixes = [findCardNumPrefix(cardNumber, 4), findCardNumPrefix(cardNumber, 6)];
 
   let dinersQualifiedLengths = ['14'];
   let americanQualifiedLengths = ['15'];
@@ -28,12 +38,13 @@ var detectNetwork = function(cardNumber) {
   let discoverQualifiedLengths = ['16','19'];
   let maestroQualifiedLengths = [...getSequencedArray(12, 19)];
   let chinaUnionPayQualifiedLengths = [...getSequencedArray(16, 19)];
+  let switchQualifiedLengths = ['16','18','19'];
 
+  let overlappingSwitchVisaPrefixes = ['4903', '4905', '4911', '4936'];
 
   let cardNumberLength = findCardNumLength(cardNumber);
   let network = '';
 
-  
   
   if((findPrefixNetwork(slicedDinersPrefixes) === "Diner's Club") && isQualifiedLength(cardNumberLength, dinersQualifiedLengths)){
   	
@@ -42,7 +53,12 @@ var detectNetwork = function(cardNumber) {
   	
   	network = 'American Express';
   } else if((findPrefixNetwork(slicedVisaPrefixes) === 'Visa') && isQualifiedLength(cardNumberLength, visaQualifiedLengths)){
+  	let slicedPrefixWithFourDigits = [findCardNumPrefix(cardNumber, 4)];
+  	if(hasAnyNetworkPrefixes(overlappingSwitchVisaPrefixes, slicedPrefixWithFourDigits) && cardNumber.length > 13){
   	
+  		return 'Switch';
+  	}
+
   	network = 'Visa';
   } else if((findPrefixNetwork(slicedMasterCardPrefixes) === 'MasterCard') && isQualifiedLength(cardNumberLength, masterCardQualifiedLengths)){
 
@@ -51,15 +67,20 @@ var detectNetwork = function(cardNumber) {
 
 	network = 'Discover';
   } else if((findPrefixNetwork(slicedMaestroPrefixes) === 'Maestro') && isQualifiedLength(cardNumberLength, maestroQualifiedLengths)){
+  	
   	network = 'Maestro';
   } else if((findPrefixNetwork(slicedChinaUnionPayPrefixes) === 'China UnionPay') && isQualifiedLength(cardNumberLength, chinaUnionPayQualifiedLengths)){
+  	
   	network = 'China UnionPay';
+  } else if((findPrefixNetwork(slicedSwitchPrefixes) === 'Switch') && isQualifiedLength(cardNumberLength, chinaUnionPayQualifiedLengths)){
+  	
+  	network = 'Switch';
   }
 
   return network;
 };
 
-//find the prefix using findCardNumPrefix() function
+
 function findCardNumPrefix(cardNumber, numOfPrefixDigits){
 	let cardNumberPrefix = cardNumber.slice(0, numOfPrefixDigits);
 
@@ -91,7 +112,8 @@ function findPrefixNetwork(prefixes){
 	let masterCardPrefixes = [...getSequencedArray(51, 55)];
 	let discoverPrefixes = ['6011',...getSequencedArray(644, 649),'65'];
 	let maestroPrefixes = ['5018', '5020', '5038','6304'];
-	let chinaUnionPayPrefixes = [...getSequencedArray(622126, 622925),...getSequencedArray(624, 626),...getSequencedArray(6282, 6288)]; 
+	let chinaUnionPayPrefixes = [...getSequencedArray(622126, 622925),...getSequencedArray(624, 626),...getSequencedArray(6282, 6288)];
+	let switchPrefixes = ['4903', '4905', '4911', '4936', '564182', '633110', '6333','6759']; 
 	
 
 	if(hasAnyNetworkPrefixes(dinersClubPrefixes, prefixes)){
@@ -113,6 +135,8 @@ function findPrefixNetwork(prefixes){
 		network = 'Maestro';
 	} else if(hasAnyNetworkPrefixes(chinaUnionPayPrefixes, prefixes)){
 		network = 'China UnionPay';
+	} else if(hasAnyNetworkPrefixes(switchPrefixes, prefixes)){
+		network = 'Switch';
 	}
 
 	return network;
@@ -130,15 +154,24 @@ function isQualifiedLength(length, qualifiedLengths){
 	return isQualifiedNetworkLength;
 }
 
-//find the length using findCardNumLength() function
+
 function findCardNumLength(cardNumber){
 	return cardNumber.length;
 }
 
-// Discover always has a prefix of 6011, 644-649, or 65, and a length of 16 or 19.
-// Maestro always has a prefix of 5018, 5020, 5038, or 6304, and a length of 12-19.
 
-// detectNetwork('50180123456789123');
+function getSequencedArray(beginning, end){
+  let sequencedArray = [];
+  for(let i = beginning; i <= end; i++){
+    sequencedArray.push(i.toString());
+  }
+  return sequencedArray;
+}
+
+
+
+
+//*******algorithm********
 
 //write the tests for the two new cards
 //create a function getPrefixRangeArray(beiginning,end) that takes a beginning and end ranges of a Prefix
@@ -158,17 +191,14 @@ function findCardNumLength(cardNumber){
 //goal is to distinguish between both
 //according to documentation in any conflict choose the network with the longer prefix (Switch) 
 
-// China UnionPay always has a prefix of 622126-622925, 624-626, or 6282-6288 and a length of 16-19.
-// Switch always has a prefix of 4903, 4905, 4911, 4936, 564182, 633110, 6333, or 6759 and a length of 16, 18, or 19.
-// Heads up! Switch and Visa seem to have some overlapping card numbers - in any apparent conflict, you should choose the network with the longer prefix.
 
-
-function getSequencedArray(beginning, end){
-  let sequencedArray = [];
-  for(let i = beginning; i <= end; i++){
-    sequencedArray.push(i.toString());
-  }
-  return sequencedArray;
-}
+//solution
+//When a number qualifies as a Visa number and goes into the else if block in detectNetwork function
+//we need to run an additional test and if the card number qualifies as a Switch number it would be 
+//more accurate to choose Switch over Visa because Switch has longer prefixes and to do so we need to 
+//call the function hasAnyNetworkPrefixes with the overlapping prefixes for both networks which are
+//all the Switch prefixes starting with a 4 ['4903', '4905', '4911', '4936']
+//and for the length as long as its longer than 13 then it has to be either 16 or 19 which are qualified
+//as Switch lengths
 
 
