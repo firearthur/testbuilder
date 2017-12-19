@@ -19,13 +19,15 @@ var detectNetwork = function(cardNumber) {
   let slicedMasterCardPrefixes = [findCardNumPrefix(cardNumber, 2)];
   let slicedDiscoverPrefixes = [findCardNumPrefix(cardNumber, 4), findCardNumPrefix(cardNumber, 3), findCardNumPrefix(cardNumber, 2)];
   let slicedMaestroPrefixes = [findCardNumPrefix(cardNumber, 4)];
+  let slicedChinaUnionPayPrefixes = [findCardNumPrefix(cardNumber, 4), findCardNumPrefix(cardNumber, 3), findCardNumPrefix(cardNumber, 6)];
 
   let dinersQualifiedLengths = ['14'];
   let americanQualifiedLengths = ['15'];
   let visaQualifiedLengths = ['13', '16','19'];
   let masterCardQualifiedLengths = ['16'];
   let discoverQualifiedLengths = ['16','19'];
-  let maestroQualifiedLengths = ['12','13','14', '15', '16', '17', '18', '19'];
+  let maestroQualifiedLengths = [...getSequencedArray(12, 19)];
+  let chinaUnionPayQualifiedLengths = [...getSequencedArray(16, 19)];
 
 
   let cardNumberLength = findCardNumLength(cardNumber);
@@ -50,6 +52,8 @@ var detectNetwork = function(cardNumber) {
 	network = 'Discover';
   } else if((findPrefixNetwork(slicedMaestroPrefixes) === 'Maestro') && isQualifiedLength(cardNumberLength, maestroQualifiedLengths)){
   	network = 'Maestro';
+  } else if((findPrefixNetwork(slicedChinaUnionPayPrefixes) === 'China UnionPay') && isQualifiedLength(cardNumberLength, chinaUnionPayQualifiedLengths)){
+  	network = 'China UnionPay';
   }
 
   return network;
@@ -84,9 +88,10 @@ function findPrefixNetwork(prefixes){
 	let dinersClubPrefixes = ['38','39'];
 	let americanExpressPrefixes = ['34','37'];
 	let visaPrefixes = ['4']
-	let masterCardPrefixes = ['51','52','53','54','55'];
-	let discoverPrefixes = ['6011','644','645','646','647','648','649','65'];
-	let maestroPrefixes = ['5018', '5020', '5038','6304']; 
+	let masterCardPrefixes = [...getSequencedArray(51, 55)];
+	let discoverPrefixes = ['6011',...getSequencedArray(644, 649),'65'];
+	let maestroPrefixes = ['5018', '5020', '5038','6304'];
+	let chinaUnionPayPrefixes = [...getSequencedArray(622126, 622925),...getSequencedArray(624, 626),...getSequencedArray(6282, 6288)]; 
 	
 
 	if(hasAnyNetworkPrefixes(dinersClubPrefixes, prefixes)){
@@ -106,6 +111,8 @@ function findPrefixNetwork(prefixes){
 
 	} else if(hasAnyNetworkPrefixes(maestroPrefixes, prefixes)){
 		network = 'Maestro';
+	} else if(hasAnyNetworkPrefixes(chinaUnionPayPrefixes, prefixes)){
+		network = 'China UnionPay';
 	}
 
 	return network;
@@ -143,3 +150,18 @@ function findCardNumLength(cardNumber){
 //if it checks then you set teh network to switch instead
 //you can add a micro performance booster at the last validation for switch to check if the network was already set to switch by the
 //previous validation in the visa section and directly move from there to the network return value 
+
+
+// China UnionPay always has a prefix of 622126-622925, 624-626, or 6282-6288 and a length of 16-19.
+// Switch always has a prefix of 4903, 4905, 4911, 4936, 564182, 633110, 6333, or 6759 and a length of 16, 18, or 19.
+
+
+function getSequencedArray(beginning, end){
+  let sequencedArray = [];
+  for(let i = beginning; i <= end; i++){
+    sequencedArray.push(i.toString());
+  }
+  return sequencedArray;
+}
+
+
