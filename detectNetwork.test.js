@@ -205,27 +205,45 @@ describe('Maestro', function() {
 
 
 //create a function getSequencedArray(beginning, end) that receives beginning of the sequence
-//and end of it arguments and returns an array of the sequenced numbers 
+//and end of sequence arguments and returns an array of the sequenced numbers 
 
-//create and array prefixesArray of prefixes that has the network prefixes and uses the getSequencedArray function to fill sequencial elements with the spread operator
-//create and array lengthsArray of lengths that has the network lengths and uses the getSequencedArray function to fill sequencial elements with the spread operator
+//create and array prefixesArray of prefixes that has the network prefixes and uses 
+//the getSequencedArray function to fill sequencial elements with the spread operator
+//create and array lengthsArray of lengths that has the network lengths and uses 
+//the getSequencedArray function to fill sequencial elements with the spread operator
 
 //prefixesArray forEach(callback(prefix)) each prefix has to run test on all the network lengths
 //so we would call lengthsArray forEach(callback(length)) and inside the callback function 
 //we'd run our 'it' test using each prefix from the 
-//prefixesArray => forEach => prefix and each length from lengthesArray => length
+//prefixesArray => forEach => prefix and each length from lengthsArray => length
 
 // it('has a prefix of ' + prefix + ' and a length of ' + length, function(){
 //   expect(detectNetwork( prefix + getPaddingString(length, prefix.length))).to.equal(NETWORK_NAME);
 // });
 
-// describe('should support China UnionPay',function(){
+describe('should support China UnionPay',function(){
+  let expect = chai.expect;
+
+  let prefixesArray = [...getSequencedArray(622126, 622925),...getSequencedArray(624, 626),...getSequencedArray(6282, 6288)];
+  let lengthsArray = [...getSequencedArray(16, 19)];
+
+  prefixesArray.forEach((prefix) => {
+
+    lengthsArray.forEach((length) => {
+      
+      it('has a prefix of ' + prefix + ' and a length of ' + length, function(){
+        expect(detectNetwork( prefix + getPaddingString(length, prefix.length))).to.equal('China UnionPay');
+      });      
+
+    });
+
+  });
+
+});
 
 
 
-
-// });
-describe('should support Switch');
+// describe('should support Switch');
 
 
 
