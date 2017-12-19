@@ -33,7 +33,7 @@ describe('Introduction to Mocha Tests - READ ME FIRST', function() {
   // A test should only fail if the expected behavior doesn't match the actual.
   it('Throws an error when expected behavior does not match actual behavior', function() {
     var even = function(num){
-      return num%2 === 0;
+      return num % 2 === 0;
     }
 
     if(even(10) !== true) {
@@ -172,31 +172,23 @@ describe('Maestro', function() {
   for (var length = 12; length <= 19; length++) {
     (function(length) {
 
-      function getPaddingString(length){
-        let paddingString = '';
-        let lengthWithoutPrefix = length - 4;
-
-        for(var i = 0; i < lengthWithoutPrefix; i++){
-          paddingString += Math.floor(Math.random() * 10);
-        }
-        return paddingString;
-      }
-      
       it('has a prefix of 5018 and a length of ' + length, function(){
         
-
-        let cardNumber = '5018' + getPaddingString(length);
+        let cardNumber = '5018' + getPaddingString(length, 4);
         
         expect(detectNetwork(cardNumber)).to.equal('Maestro');
       });
+
       it('has a prefix of 5020 and a length of ' + length, function(){
-        expect(detectNetwork('5020' + getPaddingString(length))).to.equal('Maestro');
+        expect(detectNetwork('5020' + getPaddingString(length, 4))).to.equal('Maestro');
       });
+
       it('has a prefix of 5038 and a length of ' + length, function(){
-        expect(detectNetwork('5038' + getPaddingString(length))).to.equal('Maestro');
+        expect(detectNetwork('5038' + getPaddingString(length, 4))).to.equal('Maestro');
       });
+
       it('has a prefix of 6304 and a length of ' + length, function(){
-        expect(detectNetwork('6304' + getPaddingString(length))).to.equal('Maestro');
+        expect(detectNetwork('6304' + getPaddingString(length, 4))).to.equal('Maestro');
       });
       
     })(length);
@@ -204,5 +196,54 @@ describe('Maestro', function() {
 
 });
 
-describe('should support China UnionPay')
-describe('should support Switch')
+
+
+// China UnionPay always has a prefix of 622126-622925, 624-626, or 6282-6288 and a length of 16-19.
+// Switch always has a prefix of 4903, 4905, 4911, 4936, 564182, 633110, 6333, or 6759 and a length of 16, 18, or 19.
+
+// Heads up! Switch and Visa seem to have some overlapping card numbers - in any apparent conflict, you should choose the network with the longer prefix.
+
+
+//create a function getSequencedArray(beginning, end) that receives beginning of the sequence
+//and end of it arguments and returns an array of the sequenced numbers 
+
+//create and array prefixesArray of prefixes that has the network prefixes and uses the getSequencedArray function to fill sequencial elements with the spread operator
+//create and array lengthsArray of lengths that has the network lengths and uses the getSequencedArray function to fill sequencial elements with the spread operator
+
+//prefixesArray forEach(callback(prefix)) each prefix has to run test on all the network lengths
+//so we would call lengthsArray forEach(callback(length)) and inside the callback function 
+//we'd run our 'it' test using each prefix from the 
+//prefixesArray => forEach => prefix and each length from lengthesArray => length
+
+// it('has a prefix of ' + prefix + ' and a length of ' + length, function(){
+//   expect(detectNetwork( prefix + getPaddingString(length, prefix.length))).to.equal(NETWORK_NAME);
+// });
+
+// describe('should support China UnionPay',function(){
+
+
+
+
+// });
+describe('should support Switch');
+
+
+
+
+function getSequencedArray(beginning, end){
+  let sequencedArray = [];
+  for(let i = beginning; i <= end; i++){
+    sequencedArray.push(i.toString());
+  }
+  return sequencedArray;
+}
+
+function getPaddingString(length, prefixLength){
+  let paddingString = '';
+  let lengthWithoutPrefix = length - prefixLength;
+
+  for(var i = 0; i < lengthWithoutPrefix; i++){
+    paddingString += Math.floor(Math.random() * 10);
+  }
+  return paddingString;
+}
